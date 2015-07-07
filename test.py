@@ -4,7 +4,7 @@ from PIL import Image
 
 uc = UC1611_4wire()
 uc.open(0,0)
-#uc.max_speed_hz = 1000
+uc.max_speed_hz = 41660000
 bias = 0x0
 
 uc.system_reset()
@@ -17,7 +17,7 @@ uc.set_scroll_line(0)
 uc.set_fixed_lines(0)
 
 uc.set_mirror_x(True)
-
+#uc.set_increment_page_first(True)
 #moustique = list(Image.open("pokemon.png").getdata())
 
 i = 0
@@ -43,13 +43,13 @@ uc.send_img(Image.open("pokemon_inverted.png").getdata())
 # for i in range(4):
 #     uc.data(buf)
 
-for i in range(160):
-    uc.set_scroll_line(i)
-    sleep(.3)
+# for i in range(160):
+#     uc.set_scroll_line(i)
+#     sleep(.3)
 
-for page in range(80):
-    buf = [page // 5 + (page // 5) * 16] * 240
-    uc.data(buf)
+# for page in range(80):
+#     buf = [page // 5 + (page // 5) * 16] * 240
+#     uc.data(buf)
 
 # while i < len(moustique):
 #     uc.data(moustique[i:i + 4096])
@@ -58,11 +58,20 @@ for page in range(80):
 
 
 # while True:
-#     #uc.set_all_pixel_on(0x0)
-#     for bias in range(0xFF):
-#         uc.set_v_bias_pot(bias)
-#         print("OFF, " + str(bias))
-#         sleep(.1)
+    #uc.set_all_pixel_on(0x0)
+for bias in range(64):
+    uc.set_v_bias_pot(bias)
+    print("bias " + str(bias))
+    sleep(.5)
+    uc.set_v_bias_pot(bias + 64)
+    print("bias " + str(bias + 64))
+    sleep(.5)
+    uc.set_v_bias_pot(bias + 128)
+    print("bias " + str(bias + 128))
+    sleep(.5)
+    uc.set_v_bias_pot(bias + 192)
+    print("bias " + str(bias + 192))
+    sleep(.5)
 
     # uc.set_all_pixel_on(0x1)
     # for bias in range(0xFF):

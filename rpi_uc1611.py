@@ -37,7 +37,6 @@ class UC1611(spi.SpiDev):
     def set_panel_loading(self, n):
         self.cmd(0x28 | (n & 0x03))
 
-
     def set_pump_ctrl (self, n):
         self.cmd(0x2C | (n & 0x03))
 
@@ -136,7 +135,7 @@ class UC1611(spi.SpiDev):
         self.cmd(0xE4 | (t & 0x03))
         self.cmd(n & 0xFF)
 
-    def set_lcd_bias_ratio(self, n):
+    def set_bias_ratio(self, n):
         self.cmd(0xE8 | (n & 0x03))
 
     def reset_cursor_update_mode(self):
@@ -174,7 +173,7 @@ class UC1611(spi.SpiDev):
 class UC1611_4wire(UC1611):
     def __init__(self):
         super().__init__()
-        self.cd_pin = 4
+        self.cd_pin = 24
 
     def open(self, *args, **kwargs):
         super().open(*args, **kwargs)
@@ -186,13 +185,13 @@ class UC1611_4wire(UC1611):
     def cmd(self, n):
         # pull CD low
         GPIO.output(self.cd_pin, GPIO.LOW)
-        self.writebytes([n])
+        self.xfer([n])
 
     # Takes a list
     def data(self, n):
         # pull CD high
         GPIO.output(self.cd_pin, GPIO.HIGH)
-        self.writebytes(n)
+        self.xfer(n)
 
 class UC1611_3wire(UC1611):
     def __init__(self):
@@ -203,8 +202,8 @@ class UC1611_3wire(UC1611):
         self.bits_per_word = 9
 
     def cmd(self, n):
-        self.writebytes([0x100 | n])
+        self.xfer([0x100 | n])
 
     # Takes a list
     def data(self, n):
-        self.writebytes(n)
+        self.xfer(n)
